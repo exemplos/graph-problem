@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
+
 
 f = open("xclara.csv")
 data = np.loadtxt(fname = f, delimiter = ',')
@@ -12,9 +12,8 @@ print(n_samples)
 print(n_features)
 n_digits = 3
 
-reduced_data = PCA(n_components=2).fit_transform(data)
 kmeans = KMeans(init='k-means++', n_clusters=n_digits, n_init=10)
-kmeans.fit(reduced_data)
+kmeans.fit(data)
 
 centroids = kmeans.cluster_centers_
 print(centroids)
@@ -23,8 +22,8 @@ print("==============================")
 
 h = .02
 
-x_min, x_max = reduced_data[:, 0].min() - 1, reduced_data[:, 0].max() + 1
-y_min, y_max = reduced_data[:, 1].min() - 1, reduced_data[:, 1].max() + 1
+x_min, x_max = data[:, 0].min() - 1, data[:, 0].max() + 1
+y_min, y_max = data[:, 1].min() - 1, data[:, 1].max() + 1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 Z = kmeans.predict(np.c_[xx.ravel(), yy.ravel()])
 Z = Z.reshape(xx.shape)
@@ -35,7 +34,7 @@ plt.imshow(Z, interpolation='nearest',
            cmap=plt.cm.Paired,
            aspect='auto', origin='lower')
 
-plt.plot(reduced_data[:, 0], reduced_data[:, 1], 'k.', markersize=2)
+plt.plot(data[:, 0], data[:, 1], 'k.', markersize=2)
 plt.scatter(centroids[:, 0], centroids[:, 1],
             marker='x', s=169, linewidths=3,
             color='w', zorder=10)
